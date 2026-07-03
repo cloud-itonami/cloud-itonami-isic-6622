@@ -1,0 +1,11 @@
+{:itonami.blueprint/id "cloud-itonami-6622"
+ :itonami.blueprint/name "Activities of insurance agents and brokers"
+ :itonami.blueprint/isic-rev5 "6622"
+ :itonami.blueprint/domain :insurance/intermediation
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:financial-inclusion :data-sovereignty :transparency]
+ :itonami.blueprint/governor :insurance-intermediation-governor
+ :itonami.blueprint/required-technologies [:robotics :insurance :identity :forms :dmn :bpmn :audit-ledger]
+ :itonami.blueprint/optional-technologies []
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/robotics true}
