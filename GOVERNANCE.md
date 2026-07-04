@@ -1,6 +1,6 @@
 # Governance
 
-`cloud-itonami-6622` is an OSS open-business blueprint for independent insurance agency and brokerage -- policy placement, quote comparison, and commission-based intermediation between customer and insurer.
+`cloud-itonami-isic-6622` is an OSS open-business blueprint for independent insurance agency and brokerage -- policy placement, quote comparison, and commission-based intermediation between customer and insurer.
 Governance covers both the capability layer and the operator model.
 
 ## Maintainers

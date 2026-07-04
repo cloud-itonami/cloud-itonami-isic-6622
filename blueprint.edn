@@ -1,4 +1,4 @@
-{:itonami.blueprint/id "cloud-itonami-6622"
+{:itonami.blueprint/id "cloud-itonami-isic-6622"
  :itonami.blueprint/name "Activities of insurance agents and brokers"
  :itonami.blueprint/isic-rev5 "6622"
  :itonami.blueprint/domain :insurance/intermediation

@@ -1,4 +1,4 @@
-# cloud-itonami-6622
+# cloud-itonami-isic-6622
 
 Open Business Blueprint for **ISIC Rev.5 6622**: Activities of insurance agents and brokers.
 

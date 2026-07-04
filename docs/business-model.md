@@ -2,7 +2,7 @@
 
 ## Classification
 
-- Repository: `cloud-itonami-6622`
+- Repository: `cloud-itonami-isic-6622`
 - ISIC Rev.5: `6622`
 - Activity: independent insurance agency and brokerage -- policy placement, quote comparison, and commission-based intermediation between customer and insurer
 - Social impact: financial inclusion, data sovereignty, transparent audit
