@@ -31,7 +31,13 @@
 
 ## Trust Controls
 
-- no policy is placed or bound on a customer's behalf, and no commission is booked, without human sign-off
-- an undisclosed conflict of interest forces a hold, not an override
-- every placement path is auditable
+- no policy is placed or bound on a customer's behalf, and no commission
+  is booked, without human sign-off
+- an undisclosed conflict of interest on the assigned broker, a
+  placement based on fewer than two compared quotes, a fabricated
+  jurisdiction licensing citation, a commission rate exceeding the
+  jurisdiction's own recorded cap, or a double-booking of an
+  already-booked commission -- each forces a hold, not an override
+- every intake, assessment, screening, binding and booking path is
+  auditable
 - emergency manual override paths remain outside LLM control
