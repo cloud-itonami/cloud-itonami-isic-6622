@@ -79,13 +79,39 @@
        :stake      nil
        :confidence 0.9})))
 
+(def default-corporate-intel-check
+  "No-op corporate-intelligence cross-reference: always 'nothing on
+  file'. This is the default so every existing caller of `screen-
+  conflict`/`infer`/`mock-advisor` keeps its exact prior behavior unless
+  it explicitly wires in `intermediation.corporate-intel/check-
+  relationship` (or an equivalent). Not required from this namespace
+  directly -- keeping the dependency optional at the brokerllm level,
+  injected only by whoever builds the advisor."
+  (constantly {:found? false :related? false}))
+
 (defn- screen-conflict
   "Conflict-of-interest screening draft. `:conflict-hit?` on the party
   record injects the failure mode: the Insurance Intermediation
   Governor must HOLD, un-overridably, on any conflict-of-interest hit.
   Missing disclosure yields low confidence -> escalate rather than
-  auto-clear."
-  [db {:keys [subject]}]
+  auto-clear.
+
+  An OPTIONAL `:placement-id` on the request additionally cross-
+  references the placement's CUSTOMER against cloud-itonami-isic-8291's
+  :disclosure/relationship-check op via `screen-fn` (broker name x
+  customer name -> corporate-intel result, see `intermediation.
+  corporate-intel/check-relationship`) -- catching an undisclosed
+  professional relationship between THIS broker and the SPECIFIC
+  customer of THIS placement, something the local-only :conflict-hit?/
+  :disclosure-doc checks above cannot see at all (they only reflect a
+  static flag on the broker's own record, with no per-placement
+  customer awareness). `screen-fn` is consulted ONLY once the local
+  checks are otherwise clean and a placement/customer are actually
+  resolvable -- a local conflict-hit or missing disclosure is decided
+  first, cheaply, without depending on an external actor at all.
+  Omitting `:placement-id` (every existing caller) is EXACTLY the prior
+  behavior."
+  [db {:keys [subject placement-id]} screen-fn]
   (let [p (store/party db subject)]
     (cond
       (nil? p)
@@ -112,13 +138,55 @@
        :confidence 0.4}
 
       :else
-      {:summary    (str (:name p) ": 利益相反なし、開示書類あり")
-       :rationale  "開示書類確認 + 利益相反リスト非一致。"
-       :cites      [:disclosure-doc :conflict-registry]
-       :effect     :conflict/set
-       :value      {:party-id subject :verdict :clear}
-       :stake      nil
-       :confidence 0.9})))
+      (if-let [customer-name (when placement-id
+                                (let [pl (store/placement db placement-id)
+                                      customer (store/party db (:customer pl))]
+                                  (:name customer)))]
+        (let [rel (screen-fn (:name p) customer-name)]
+          (cond
+            (:pending-human-review? rel)
+            {:summary    (str (:name p) ": corporate-intelligence 照会が人手レビュー待ち")
+             :rationale  "cloud-itonami-isic-8291 側の DisclosureGovernor が high-stakes escalate 中。確定するまでクリアにできない。"
+             :cites      [:disclosure-doc :conflict-registry :corporate-intelligence]
+             :effect     :conflict/set
+             :value      {:party-id subject :verdict :incomplete}
+             :stake      nil
+             :confidence 0.5}
+
+            (:held? rel)
+            {:summary    (str (:name p) ": corporate-intelligence 照会が拒否された(契約/設定の問題)")
+             :rationale  (str "cloud-itonami-isic-8291 の DisclosureGovernor が本テナントの照会を拒否: " (pr-str (:reason rel)))
+             :cites      [:disclosure-doc :conflict-registry :corporate-intelligence]
+             :effect     :conflict/set
+             :value      {:party-id subject :verdict :incomplete}
+             :stake      nil
+             :confidence 0.4}
+
+            (:related? rel)
+            {:summary    (str (:name p) ": corporate-intelligence 照会でカウンターパーティとの関係を検出")
+             :rationale  "cloud-itonami-isic-8291 の関係性照会が一致(所属または関係edge)を検出。人手確認とホールドが必須。"
+             :cites      [:disclosure-doc :conflict-registry :corporate-intelligence]
+             :effect     :conflict/set
+             :value      {:party-id subject :verdict :hit}
+             :stake      nil
+             :confidence 0.9}
+
+            :else
+            {:summary    (str (:name p) ": 利益相反なし、開示書類あり(corporate-intelligence 照会もクリア)")
+             :rationale  "開示書類確認 + 利益相反リスト非一致 + corporate-intelligence 照会クリア。"
+             :cites      [:disclosure-doc :conflict-registry :corporate-intelligence]
+             :effect     :conflict/set
+             :value      {:party-id subject :verdict :clear}
+             :stake      nil
+             :confidence 0.9}))
+        ;; no :placement-id supplied -- EXACT original behavior, unchanged
+        {:summary    (str (:name p) ": 利益相反なし、開示書類あり")
+         :rationale  "開示書類確認 + 利益相反リスト非一致。"
+         :cites      [:disclosure-doc :conflict-registry]
+         :effect     :conflict/set
+         :value      {:party-id subject :verdict :clear}
+         :stake      nil
+         :confidence 0.9}))))
 
 (defn- propose-bind
   "Draft the actual placement-binding action -- placing real coverage
@@ -166,16 +234,20 @@
 
 (defn infer
   "Route a request to the right proposal generator.
-  request: {:op kw :subject id ...op-specific...}"
-  [db {:keys [op] :as request}]
-  (case op
-    :placement/intake     (normalize-intake db request)
-    :jurisdiction/assess  (assess-jurisdiction db request)
-    :conflict/screen      (screen-conflict db request)
-    :placement/bind       (propose-bind db request)
-    :commission/book      (propose-book-commission db request)
-    {:summary "未対応の操作" :rationale (str op) :cites []
-     :effect :noop :stake nil :confidence 0.0}))
+  request: {:op kw :subject id ...op-specific...}
+  `screen-fn` (default: `default-corporate-intel-check`, a no-op) is only
+  consulted by `:conflict/screen`, once local checks are otherwise clean
+  AND the request carries a resolvable `:placement-id`."
+  ([db request] (infer db request default-corporate-intel-check))
+  ([db {:keys [op] :as request} screen-fn]
+   (case op
+     :placement/intake     (normalize-intake db request)
+     :jurisdiction/assess  (assess-jurisdiction db request)
+     :conflict/screen      (screen-conflict db request screen-fn)
+     :placement/bind       (propose-bind db request)
+     :commission/book      (propose-book-commission db request)
+     {:summary "未対応の操作" :rationale (str op) :cites []
+      :effect :noop :stake nil :confidence 0.0})))
 
 ;; ----------------------------- Advisor protocol -----------------------------
 
@@ -183,8 +255,17 @@
   (-advise [advisor store request] "store + request -> proposal map"))
 
 (defn mock-advisor
-  "The deterministic advisor (the `infer` logic above). Default everywhere."
-  [] (reify Advisor (-advise [_ st req] (infer st req))))
+  "The deterministic advisor (the `infer` logic above). Default everywhere.
+  opts:
+    :corporate-intel-check -- broker name x customer name -> corporate-
+      intel result (see `intermediation.corporate-intel/check-
+      relationship`). Default: no-op (never changes a screen-conflict
+      verdict), so `(mock-advisor)` with no args keeps every existing
+      caller's exact prior behavior."
+  ([] (mock-advisor {}))
+  ([{:keys [corporate-intel-check]
+     :or   {corporate-intel-check default-corporate-intel-check}}]
+   (reify Advisor (-advise [_ st req] (infer st req corporate-intel-check)))))
 
 (def ^:private system-prompt
   (str "あなたは独立保険代理店・保険仲立人の助言者です。与えられた事実のみに"

@@ -73,6 +73,23 @@
                             {:insurer "Insurer E" :premium 90000 :commission-rate 0.22}]
                    :selected-insurer "Insurer D" :selected-premium 80000
                    :selected-commission-rate 0.25
+                   :jurisdiction "JPN" :status :intake}
+    ;; corporate-intelligence cross-reference demo (intermediation.
+    ;; corporate-intel, ADR-2607110400 addendum 4): party-3 (broker) and
+    ;; party-5 (customer) are named to line up EXACTLY with
+    ;; cloud-itonami-isic-8291's own demo relationship-graph data (see
+    ;; that repo's `dossier.store/demo-data`) -- of-1 "山田 一郎(デモ)" sits
+    ;; on the board of co-200 "Northwind Capital Holdings Ltd (demo)"
+    ;; (sanctions-flagged), a real, sourced :directorship edge. Screening
+    ;; party-3 against placement-4's customer via the real (unstubbed)
+    ;; 8291 op surfaces that edge -- something party-3's own local
+    ;; record (clean, disclosure on file) cannot show at all.
+    "placement-4" {:id "placement-4" :customer "party-5" :broker "party-3"
+                   :needs "commercial property insurance for a JPN branch office"
+                   :quotes [{:insurer "Insurer F" :premium 200000 :commission-rate 0.12}
+                            {:insurer "Insurer G" :premium 210000 :commission-rate 0.10}]
+                   :selected-insurer "Insurer F" :selected-premium 200000
+                   :selected-commission-rate 0.12
                    :jurisdiction "JPN" :status :intake}}
    :parties
    {"party-1" {:id "party-1" :name "customer" :role :customer
@@ -80,7 +97,20 @@
     "party-2" {:id "party-2" :name "田中 一郎" :role :broker
                :conflict-hit? false :disclosure-doc "form-jp-****1234"}
     "party-4" {:id "party-4" :name "J. Doe" :role :broker
-               :conflict-hit? true :disclosure-doc nil}}})
+               :conflict-hit? true :disclosure-doc nil}
+    ;; clean on every LOCAL field (no conflict-hit?, disclosure-doc on
+    ;; file) -- matches cloud-itonami-isic-8291's official "山田
+    ;; 一郎(デモ)" (of-1) exactly, so the corporate-intelligence
+    ;; cross-reference is the only thing that catches the undisclosed
+    ;; directorship at placement-4's customer (party-5) below.
+    "party-3" {:id "party-3" :name "山田 一郎(デモ)" :role :broker
+               :conflict-hit? false :disclosure-doc "form-jp-****5678"}
+    ;; matches cloud-itonami-isic-8291's sanctions-flagged demo company
+    ;; "Northwind Capital Holdings Ltd (demo)" (co-200) exactly -- the
+    ;; placement's customer can be a company, per this repo's generic
+    ;; `party` shape.
+    "party-5" {:id "party-5" :name "Northwind Capital Holdings Ltd (demo)" :role :customer
+               :conflict-hit? false :disclosure-doc nil}}})
 
 ;; ----------------------------- shared commit logic -----------------------------
 

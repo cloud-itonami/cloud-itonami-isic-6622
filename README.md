@@ -144,8 +144,9 @@ toward the same lib.
 | `src/intermediation/governor.cljc` | **Insurance Intermediation Governor** -- 4 HARD checks (spec-basis · conflict-of-interest · insufficient-quotes · commission-rate-exceeds-cap) + placement-not-bound/double-booking guards + 1 soft (confidence/actuation gate) |
 | `src/intermediation/phase.cljc` | **Phase 0→3** -- read-only → assisted intake → assisted assess/screen → supervised (binding and commission booking always human; placement intake auto-eligible, no liability risk) |
 | `src/intermediation/operation.cljc` | **OperationActor** -- langgraph-clj StateGraph |
+| `src/intermediation/corporate_intel.cljc` | optional cross-reference into [`cloud-itonami-isic-8291`](https://github.com/cloud-itonami/cloud-itonami-isic-8291)'s `:disclosure/relationship-check` (ADR-2607110400 addendum 4) -- catches a broker clean on every LOCAL field but with an undisclosed professional-capacity relationship to THIS placement's customer in 8291's own sourced relationship-graph data; wired into `screen-conflict` via an injected `:placement-id` + fn, default is a no-op so every prior caller's behavior is unchanged unless explicitly opted in |
 | `src/intermediation/sim.cljc` | demo driver |
-| `test/intermediation/*_test.clj` | governor contract · phase invariants · store parity · registry conformance · facts coverage |
+| `test/intermediation/*_test.clj` | governor contract · phase invariants · store parity · registry conformance · facts coverage · corporate-intelligence integration |
 
 ## Business-process coverage (honest)
 
