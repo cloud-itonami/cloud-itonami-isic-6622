@@ -66,9 +66,15 @@
   the SAME placement's commission twice, each off this actor's own
   records."
   (:require [intermediation.facts :as facts]
+            [intermediation.kernels.gate :as gate]
             [intermediation.store :as store]))
 
-(def confidence-floor 0.6)
+(def confidence-floor
+  "Documented threshold. The DECIDING copy is
+  `intermediation.kernels.gate/confidence-floor-x100` (integer x100 in
+  the safety kernel); this def is kept for callers/docs and pinned
+  equal by `intermediation.kernels.gate-test`."
+  0.6)
 
 (def high-stakes
   "Stakes grave enough to always require a human, even when clean.
@@ -76,6 +82,20 @@
   booking a real commission are the two real-world actuation events
   this actor performs."
   #{:actuation/bind :actuation/book-commission})
+
+(defn- confidence->x100
+  "Host bridge (façade-side, not kernel vocabulary): scale a 0.0..1.0
+  advisor confidence to the kernel's integer x100 wire code."
+  [c]
+  (Math/round (* 100.0 (double c))))
+
+(defn- rate->x10000
+  "Host bridge (façade-side, not kernel vocabulary): scale a 0.0..1.0
+  commission rate (or cap) to the kernel's integer x10000 wire code
+  (basis points). Every rate/cap in `intermediation.facts` and the
+  demo store has <= 4 decimals, so the scaling is exact."
+  [r]
+  (Math/round (* 10000.0 (double r))))
 
 ;; ----------------------------- checks -----------------------------
 
@@ -119,7 +139,9 @@
   [{:keys [op subject]} st]
   (when (= op :placement/bind)
     (let [p (store/placement st subject)]
-      (when (< (count (:quotes p)) 2)
+      ;; the numeric floor itself lives in the kernel
+      ;; (gate/quotes-min-required, compared in-kernel)
+      (when (= 1 (gate/quotes-insufficient (count (:quotes p))))
         [{:rule :insufficient-quotes
           :detail "2件未満の見積り比較での契約媒介提案"}]))))
 
@@ -132,7 +154,12 @@
   (when (= op :commission/book)
     (let [p (store/placement st subject)
           cap (facts/commission-rate-cap (:jurisdiction p))]
-      (when (and cap (> (double (:selected-commission-rate p)) (double cap)))
+      ;; the comparison itself lives in the kernel (basis-point ints via
+      ;; the rate->x10000 bridge); a nil cap means 'no cap recorded' and
+      ;; never reaches the kernel
+      (when (and cap (= 1 (gate/rate-exceeds-cap
+                           (rate->x10000 (:selected-commission-rate p))
+                           (rate->x10000 cap))))
         [{:rule :commission-rate-exceeds-cap
           :detail (str subject " の手数料率が法域上限を超過している")}]))))
 
@@ -169,22 +196,35 @@
    {:ok? bool :violations [..] :confidence c :escalate? bool :high-stakes? bool
     :hard? bool}."
   [request _context proposal st]
-  (let [hard (into []
-                   (concat (spec-basis-violations request proposal)
-                           (conflict-violations request proposal st)
-                           (insufficient-quotes-violations request st)
-                           (commission-rate-exceeds-cap-violations request st)
-                           (placement-not-bound-violations request st)
-                           (double-booking-violations request st)))
+  (let [spec-v (spec-basis-violations request proposal)
+        conflict-v (conflict-violations request proposal st)
+        quotes-v (insufficient-quotes-violations request st)
+        cap-v (commission-rate-exceeds-cap-violations request st)
+        bound-v (placement-not-bound-violations request st)
+        dbl-v (double-booking-violations request st)
+        hard (into [] (concat spec-v conflict-v quotes-v cap-v bound-v dbl-v))
         conf (:confidence proposal 0.0)
-        low? (< conf confidence-floor)
         stakes? (boolean (high-stakes (:stake proposal)))
-        hard? (boolean (seq hard))]
-    {:ok?          (and (not hard?) (not low?) (not stakes?))
+        ;; The decision itself is delegated to the safety kernel
+        ;; (intermediation.kernels.gate, integer-coded fail-closed core);
+        ;; this façade only gathers evidence (violation lists with
+        ;; human-readable details) and maps codes back to keywords.
+        ;; Kernel is stricter than the old inline logic on ONE case by
+        ;; design: an out-of-range confidence (< 0 or > 1.0) now
+        ;; escalates instead of counting as high confidence.
+        code (gate/verdict-code (if (seq spec-v) 1 0)
+                                (if (seq conflict-v) 1 0)
+                                (if (seq quotes-v) 1 0)
+                                (if (seq cap-v) 1 0)
+                                (if (seq bound-v) 1 0)
+                                (if (seq dbl-v) 1 0)
+                                (confidence->x100 conf)
+                                (if stakes? 1 0))]
+    {:ok?          (= 0 code)
      :violations   hard
      :confidence   conf
-     :hard?        hard?
-     :escalate?    (and (not hard?) (or low? stakes?))
+     :hard?        (= 2 code)
+     :escalate?    (= 1 code)
      :high-stakes? stakes?}))
 
 (defn hold-fact
