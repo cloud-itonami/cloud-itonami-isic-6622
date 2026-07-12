@@ -20,11 +20,11 @@
     (is (= (get-in result ["record" "selected_insurer"]) "Insurer B"))))
 
 (deftest binding-validation-rules
-  (is (thrown? Exception (r/register-binding "" "Insurer B" 100000 "JPN" 1)))
-  (is (thrown? Exception (r/register-binding "party-1" "" 100000 "JPN" 1)))
-  (is (thrown? Exception (r/register-binding "party-1" "Insurer B" -1 "JPN" 1)))
-  (is (thrown? Exception (r/register-binding "party-1" "Insurer B" 100000 "" 1)))
-  (is (thrown? Exception (r/register-binding "party-1" "Insurer B" 100000 "JPN" -1))))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-binding "" "Insurer B" 100000 "JPN" 1)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-binding "party-1" "" 100000 "JPN" 1)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-binding "party-1" "Insurer B" -1 "JPN" 1)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-binding "party-1" "Insurer B" 100000 "" 1)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-binding "party-1" "Insurer B" 100000 "JPN" -1))))
 
 ;; ----------------------------- register-commission-booking -----------------------------
 
@@ -43,12 +43,12 @@
     (is (= (get-in result ["record" "immutable"]) true))))
 
 (deftest commission-booking-validation-rules
-  (is (thrown? Exception (r/register-commission-booking "" 0.15 15000.0 "JPN" 0)))
-  (is (thrown? Exception (r/register-commission-booking "JPN-00000000" -0.01 15000.0 "JPN" 0)))
-  (is (thrown? Exception (r/register-commission-booking "JPN-00000000" 1.5 15000.0 "JPN" 0)))
-  (is (thrown? Exception (r/register-commission-booking "JPN-00000000" 0.15 -1 "JPN" 0)))
-  (is (thrown? Exception (r/register-commission-booking "JPN-00000000" 0.15 15000.0 "" 0)))
-  (is (thrown? Exception (r/register-commission-booking "JPN-00000000" 0.15 15000.0 "JPN" -1))))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-commission-booking "" 0.15 15000.0 "JPN" 0)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-commission-booking "JPN-00000000" -0.01 15000.0 "JPN" 0)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-commission-booking "JPN-00000000" 1.5 15000.0 "JPN" 0)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-commission-booking "JPN-00000000" 0.15 -1 "JPN" 0)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-commission-booking "JPN-00000000" 0.15 15000.0 "" 0)))
+  (is (thrown? #?(:clj Exception :cljs js/Error) (r/register-commission-booking "JPN-00000000" 0.15 15000.0 "JPN" -1))))
 
 (deftest commission-history-is-append-only
   (let [c1 (r/register-commission-booking "JPN-00000000" 0.15 15000.0 "JPN" 0)
