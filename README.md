@@ -147,6 +147,7 @@ toward the same lib.
 | `src/intermediation/corporate_intel.cljc` | optional cross-reference into [`cloud-itonami-isic-8291`](https://github.com/cloud-itonami/cloud-itonami-isic-8291)'s `:disclosure/relationship-check` (ADR-2607110400 addendum 4) -- catches a broker clean on every LOCAL field but with an undisclosed professional-capacity relationship to THIS placement's customer in 8291's own sourced relationship-graph data; wired into `screen-conflict` via an injected `:placement-id` + fn, default is a no-op so every prior caller's behavior is unchanged unless explicitly opted in |
 | `src/intermediation/sim.cljc` | demo driver |
 | `test/intermediation/*_test.clj` | governor contract · phase invariants · store parity · registry conformance · facts coverage · corporate-intelligence integration |
+| `wasm/commission_cap.kotoba` | PoC: a WASM-compiled (`kotoba-lang/kotoba` -> `kotoba-lang/kototama`'s `actor:host` ABI) port of `governor.cljc`'s `commission-rate-exceeds-cap-violations` pure comparison (decided by `intermediation.kernels.gate/rate-exceeds-cap`) -- see `wasm/README.md` for scope, the input/output ABI, and what's out of scope (Store, the placement/facts lookups, the StateGraph) |
 
 ## Business-process coverage (honest)
 

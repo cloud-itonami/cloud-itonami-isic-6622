@@ -1,0 +1,26 @@
+(ns cloud-itonami-commission-cap)
+
+(defn rate-within-cap? [commission-rate-bps cap-bps]
+  (<= commission-rate-bps cap-bps))
+
+;; ABI: `main` stays 0-arity (the compiler rejects a parameterized main --
+;; :main-arity, see kotoba-lang/kotoba's compile-wasm-expr) and reads its
+;; two real i32 inputs out of the exported linear memory instead, at fixed
+;; byte offsets a host writes into before calling main() (same convention
+;; as cloud-itonami-isic-6492's affordability.kotoba / cloud-itonami-isic-
+;; 6512's claim_coverage.kotoba / cloud-itonami-isic-6630's fee_accrual.
+;; kotoba):
+;;   offset 0: commission-rate-bps   (i32, basis points -- the placement's
+;;                                    selected commission rate * 10000;
+;;                                    e.g. 1500 = 15.00%)
+;;   offset 4: cap-bps               (i32, basis points -- the
+;;                                    jurisdiction's recorded commission-
+;;                                    rate cap * 10000, same scale)
+;; Returns 1 (commission rate within the jurisdiction's cap -- compliant,
+;; NOT a commission-rate-exceeds-cap violation) or 0 (commission rate
+;; exceeds the cap -- a HARD violation per intermediation.governor/
+;; commission-rate-exceeds-cap-violations, decided in intermediation.
+;; kernels.gate/rate-exceeds-cap). Equality is compliant -- the cap is a
+;; ceiling, not an open bound.
+(defn main []
+  (rate-within-cap? (mem-i32-at 0 0) (mem-i32-at 0 4)))
