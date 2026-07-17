@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activities of insurance agents and brokers</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+    }
+    .classification {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .isic {
+      display: inline-block;
+      background: #007acc;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.85em;
+    }
+    main {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .pitch {
+      font-size: 1.1em;
+      line-height: 1.8;
+      margin-bottom: 30px;
+      color: #444;
+    }
+    .pitch p {
+      margin-bottom: 15px;
+    }
+    .features {
+      margin: 30px 0;
+      padding: 20px;
+      background: #f5f5f5;
+      border-left: 4px solid #007acc;
+    }
+    .features h3 {
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+    .features ul {
+      list-style: none;
+      padding-left: 20px;
+    }
+    .features li {
+      margin-bottom: 8px;
+      position: relative;
+      padding-left: 20px;
+    }
+    .features li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #007acc;
+      font-weight: bold;
+    }
+    .cta-section {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .cta {
+      padding: 20px;
+      border-radius: 6px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: block;
+    }
+    .cta-primary {
+      background: #007acc;
+      color: white;
+    }
+    .cta-primary:hover {
+      background: #005a9e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 122, 204, 0.3);
+    }
+    .cta-secondary {
+      background: #e8e8e8;
+      color: #333;
+      border: 1px solid #d0d0d0;
+    }
+    .cta-secondary:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .links {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid #e0e0e0;
+    }
+    .links h3 {
+      margin-bottom: 15px;
+      color: #1a1a1a;
+    }
+    .link-list {
+      list-style: none;
+    }
+    .link-list li {
+      margin-bottom: 10px;
+    }
+    .link-list a {
+      color: #007acc;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .link-list a:hover {
+      border-bottom-color: #007acc;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 0.9em;
+    }
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8em;
+      }
+      .pitch {
+        font-size: 1em;
+      }
+      .cta-section {
+        grid-template-columns: 1fr;
+      }
+      main {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="classification">
+        ISIC Rev.5: <span class="isic">6622</span>
+      </div>
+      <h1>Activities of insurance agents and brokers</h1>
+      <p style="color: #666; margin-top: 10px;">An open-source business blueprint for licensed operators</p>
+    </header>
+
+    <main>
+      <div class="pitch">
+        <p>A forkable business and runtime for independent insurance intermediation. Deploy a governed Broker-LLM actor that drafts placement intake, validates compliance, screens for conflicts of interest, and proposes policy binding and commission booking — with an immutable audit ledger and no autonomous actuation on high-stakes decisions.</p>
+        <p>Built on the same StateGraph runtime and actor pattern as the life insurance, non-life insurance, and loss adjustment blueprints in this organization. The core contract: the Broker-LLM never binds a placement or books a commission that the Insurance Intermediation Governor would reject, and never does either without a human sign-off.</p>
+      </div>
+
+      <div class="features">
+        <h3>What's included</h3>
+        <ul>
+          <li>Insurance Intermediation Governor: 4 hard compliance checks (spec-basis, conflict-of-interest, insufficient-quotes, commission-rate-cap) + phase-gated workflow</li>
+          <li>Broker-LLM Advisor: drafts placement intake, assessment, conflict screening, binding and commission proposals</li>
+          <li>Append-only audit ledger for every intake, assessment, screening, binding and booking decision</li>
+          <li>Per-jurisdiction licensing and commission-cap requirement catalog with spec-based citations</li>
+          <li>Tested actor runtime via langgraph-clj (portable .cljc, ClojureScript + JVM)</li>
+        </ul>
+      </div>
+
+      <div class="cta-section">
+        <a href="https://itonami.cloud/isco-1212/" class="cta cta-primary">Fork + Self-Host<br><small style="font-size: 0.75em; font-weight: 400; margin-top: 5px;">Claim your free implementation</small></a>
+        <a href="https://itonami.cloud/docs/go-live.md" class="cta cta-secondary">Paid Support Path<br><small style="font-size: 0.75em; font-weight: 400; margin-top: 5px;">Production deployment & SLA</small></a>
+      </div>
+
+      <div class="links">
+        <h3>Resources</h3>
+        <ul class="link-list">
+          <li><a href="../../README.md">← Repository README</a></li>
+          <li><a href="./operator-quickstart.md">Quick start guide for operators</a></li>
+          <li><a href="./business-model.md">Business model & offer definition</a></li>
+          <li><a href="./operator-guide.md">Operator guide & certification requirements</a></li>
+          <li><a href="./adr/0001-architecture.md">Architecture & design decisions</a></li>
+        </ul>
+      </div>
+    </main>
+
+    <footer>
+      <p>AGPL-3.0-or-later | <a href="../../LICENSE" style="color: #666;">Full license</a></p>
+    </footer>
+  </div>
+</body>
+</html>
