@@ -1,6 +1,8 @@
 # Operator Quick Start
 
-This guide walks you through setting up and running the Insurance Intermediation Governor locally.
+This guide is for licensed independent insurance agents and brokers who want to fork and operate this blueprint as an open-source governed intermediation runtime in their jurisdiction.
+
+**What this guide covers:** cloning the repository, running the demo actor, executing the test suite, and locating the core Governor implementation. For production deployment, licensing, and compliance certification, see the [Operator Guide](./operator-guide.md) and [Business Model](./business-model.md).
 
 ## Prerequisites
 

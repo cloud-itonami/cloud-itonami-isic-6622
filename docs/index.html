@@ -180,34 +180,39 @@
 
     <main>
       <div class="pitch">
-        <p>A forkable business and runtime for independent insurance intermediation. Deploy a governed Broker-LLM actor that drafts placement intake, validates compliance, screens for conflicts of interest, and proposes policy binding and commission booking — with an immutable audit ledger and no autonomous actuation on high-stakes decisions.</p>
-        <p>Built on the same StateGraph runtime and actor pattern as the life insurance, non-life insurance, and loss adjustment blueprints in this organization. The core contract: the Broker-LLM never binds a placement or books a commission that the Insurance Intermediation Governor would reject, and never does either without a human sign-off.</p>
+        <p><strong>The problem:</strong> LLMs excel at drafting customer needs and comparing insurance quotes—but they have no notion of jurisdiction producer-licensing requirements, no way to verify if a broker has an undisclosed conflict of interest with the highest-paying insurer, and no authority to bind coverage. Deploying an LLM directly exposes you to fabricated licensing citations, steering customers toward commissions instead of customer needs, and silent liability.</p>
+        <p><strong>The solution:</strong> An open, forkable business blueprint and runtime that seals the Broker-LLM into a single node and wraps it with an independent Insurance Intermediation Governor. The Governor enforces four hard compliance checks (spec-basis citations, conflict-of-interest screening, minimum quote comparison, jurisdiction commission caps) and mandates human approval on all high-stakes decisions—placement binding and commission booking never run autonomous, at any phase, by construction.</p>
       </div>
 
       <div class="features">
-        <h3>What's included</h3>
+        <h3>How it stops unsafe commits</h3>
         <ul>
-          <li>Insurance Intermediation Governor: 4 hard compliance checks (spec-basis, conflict-of-interest, insufficient-quotes, commission-rate-cap) + phase-gated workflow</li>
-          <li>Broker-LLM Advisor: drafts placement intake, assessment, conflict screening, binding and commission proposals</li>
-          <li>Append-only audit ledger for every intake, assessment, screening, binding and booking decision</li>
-          <li>Per-jurisdiction licensing and commission-cap requirement catalog with spec-based citations</li>
-          <li>Tested actor runtime via langgraph-clj (portable .cljc, ClojureScript + JVM)</li>
+          <li><strong>Spec-basis check:</strong> every placement requires a cited official jurisdiction source (not LLM guesses)</li>
+          <li><strong>Conflict-of-interest screening:</strong> undisclosed broker relationships are hard-hold violations that cannot be approved</li>
+          <li><strong>Minimum quote validation:</strong> placements must compare ≥2 insurers to prove best-interest advice</li>
+          <li><strong>Commission-cap enforcement:</strong> jurisdiction rate limits are un-overridable by human operator</li>
+          <li><strong>Immutable audit ledger:</strong> every intake, assessment, screening, binding, and booking decision is recorded and append-only</li>
         </ul>
       </div>
 
+      <div class="pitch" style="margin-top: 30px; padding: 20px; background: #f0f8ff; border-left: 4px solid #007acc;">
+        <strong>What this is NOT:</strong> This actor does not claim to hold a license to place or bind insurance in any jurisdiction. Whoever deploys and operates a live instance (a licensed independent agent or brokerage) supplies the jurisdiction-specific license, real carrier relationships, and placement/commission processing integrations, and bears that jurisdiction's liability. The software supplies the governed, spec-cited, audited execution scaffold so that operator does not build the compliance layer from scratch.
+      </div>
+
       <div class="cta-section">
-        <a href="https://itonami.cloud/isco-1212/" class="cta cta-primary">Fork + Self-Host<br><small style="font-size: 0.75em; font-weight: 400; margin-top: 5px;">Claim your free implementation</small></a>
-        <a href="https://itonami.cloud/docs/go-live.md" class="cta cta-secondary">Paid Support Path<br><small style="font-size: 0.75em; font-weight: 400; margin-top: 5px;">Production deployment & SLA</small></a>
+        <a href="https://itonami.cloud/isco-1212/" class="cta cta-primary">Start Free<br><small style="font-size: 0.75em; font-weight: 400; margin-top: 5px;">Claim your implementation &amp; fork the blueprint</small></a>
+        <a href="https://itonami.cloud/docs/go-live.md" class="cta cta-secondary">Go Live with SLA<br><small style="font-size: 0.75em; font-weight: 400; margin-top: 5px;">Operator deployment &amp; certification support</small></a>
       </div>
 
       <div class="links">
-        <h3>Resources</h3>
+        <h3>Learn more</h3>
         <ul class="link-list">
-          <li><a href="../../README.md">← Repository README</a></li>
-          <li><a href="./operator-quickstart.md">Quick start guide for operators</a></li>
-          <li><a href="./business-model.md">Business model & offer definition</a></li>
-          <li><a href="./operator-guide.md">Operator guide & certification requirements</a></li>
-          <li><a href="./adr/0001-architecture.md">Architecture & design decisions</a></li>
+          <li><a href="https://github.com/cloud-itonami/cloud-itonami-isic-6622">GitHub repository</a> — full source code and actor implementation</li>
+          <li><a href="../../README.md">Repository README</a> — architecture overview and design rationale</li>
+          <li><a href="./operator-quickstart.md">Operator quick start</a> — setup and testing guide</li>
+          <li><a href="./adr/0001-architecture.md">Architecture decisions</a> — design patterns and risk controls</li>
+          <li><a href="./business-model.md">Business model</a> — open-business offer and trust controls</li>
+          <li><a href="./operator-guide.md">Operator guide</a> — deployment, compliance, and certification path</li>
         </ul>
       </div>
     </main>
