@@ -18,7 +18,7 @@
   the policy or booking the commission itself (those are `intermediation.
   operation`'s `:placement/bind` and `:commission/book`, always
   human-gated -- see README `Actuation`)."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn- unsigned-certificate
   "Every certificate this actor produces is UNSIGNED -- signature is the
@@ -52,7 +52,7 @@
     (throw (ex-info "binding: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "binding: sequence must be >= 0" {})))
-  (let [placement-number (str (str/upper-case jurisdiction) "-" (zero-pad sequence 8))
+  (let [placement-number (str (str/upper jurisdiction) "-" (zero-pad sequence 8))
         record {"record_id" placement-number
                 "kind" "binding-draft"
                 "customer" customer
@@ -83,7 +83,7 @@
     (throw (ex-info "commission-booking: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "commission-booking: sequence must be >= 0" {})))
-  (let [booking-number (str (str/upper-case jurisdiction) "-COMM-" (zero-pad sequence 6))
+  (let [booking-number (str (str/upper jurisdiction) "-COMM-" (zero-pad sequence 6))
         record {"record_id" booking-number
                 "kind" "commission-booking-draft"
                 "placement_number" placement-number
