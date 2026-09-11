@@ -23,7 +23,7 @@ The demo walks one clean placement-binding lifecycle and one clean commission-bo
 clojure -M:dev:run
 ```
 
-This runs `src/intermediation/sim.cljc`, the demo driver. Watch the console output to see:
+This runs `src/intermediation/sim.cljk`, the demo driver. Watch the console output to see:
 - Placement intake and needs assessment
 - Per-jurisdiction licensing checks
 - Broker conflict-of-interest screening
@@ -51,7 +51,7 @@ Key test files:
 The core **Insurance Intermediation Governor** lives in:
 
 ```
-src/intermediation/governor.cljc
+src/intermediation/governor.cljk
 ```
 
 This namespace implements:
@@ -65,12 +65,12 @@ See the docstring and test suite for the full contract.
 
 ## Related Namespaces
 
-- `src/intermediation/operation.cljc` — StateGraph actor runtime
-- `src/intermediation/brokerllm.cljc` — Broker-LLM Advisor (mock or LLM-backed)
-- `src/intermediation/phase.cljc` — Phase table (0→3 workflow stages)
-- `src/intermediation/facts.cljc` — Per-jurisdiction licensing/commission-cap catalog
-- `src/intermediation/registry.cljc` — Placement-binding and commission-booking draft records
-- `src/intermediation/store.cljc` — Store protocol (MemStore or DatomicStore) + audit ledger
+- `src/intermediation/operation.cljk` — StateGraph actor runtime
+- `src/intermediation/brokerllm.cljk` — Broker-LLM Advisor (mock or LLM-backed)
+- `src/intermediation/phase.cljk` — Phase table (0→3 workflow stages)
+- `src/intermediation/facts.cljk` — Per-jurisdiction licensing/commission-cap catalog
+- `src/intermediation/registry.cljk` — Placement-binding and commission-booking draft records
+- `src/intermediation/store.cljk` — Store protocol (MemStore or DatomicStore) + audit ledger
 
 ## Static Analysis
 

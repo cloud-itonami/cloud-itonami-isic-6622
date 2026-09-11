@@ -2,7 +2,7 @@
   "Hosts wasm/commission_cap.wasm (compiled from wasm/commission_cap.kotoba,
   see wasm/README.md) via kototama.tender -- proves intermediation.governor's
   commission-rate-exceeds-cap check (`commission-rate-exceeds-cap-violations`
-  in src/intermediation/governor.cljc, decided by intermediation.kernels.
+  in src/intermediation/governor.cljk, decided by intermediation.kernels.
   gate/rate-exceeds-cap) runs as a real WASM guest, not just as JVM Clojure.
 
   ABI: main is 0-arity (kotoba wasm emit rejects a parameterized main --
