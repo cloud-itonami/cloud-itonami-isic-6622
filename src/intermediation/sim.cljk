@@ -1,5 +1,5 @@
 (ns intermediation.sim
-  "Demo driver -- `clojure -M:dev:run`. Walks a clean placement through
+  "Demo driver -- `kbb -M:dev:run`. Walks a clean placement through
   intake -> jurisdiction licensing/commission-cap assessment -> broker
   conflict-of-interest screening -> placement-binding proposal (always
   escalates) -> human approval -> commit, then a clean commission-
