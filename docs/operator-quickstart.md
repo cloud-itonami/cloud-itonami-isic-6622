@@ -20,7 +20,7 @@ This guide is for licensed independent insurance agents and brokers who want to 
 The demo walks one clean placement-binding lifecycle and one clean commission-booking lifecycle through the actor, plus six hard-hold test cases:
 
 ```bash
-clojure -M:dev:run
+kbb -M:dev:run
 ```
 
 This runs `src/intermediation/sim.cljk`, the demo driver. Watch the console output to see:
@@ -36,7 +36,7 @@ This runs `src/intermediation/sim.cljk`, the demo driver. Watch the console outp
 The test suite covers the governor contract, phase invariants, store parity, registry conformance, and jurisdiction facts coverage:
 
 ```bash
-clojure -M:dev:test
+kbb -M:dev:test
 ```
 
 Key test files:
@@ -77,7 +77,7 @@ See the docstring and test suite for the full contract.
 Run clj-kondo linter (errors fail CI):
 
 ```bash
-clojure -M:lint
+kbb -M:lint
 ```
 
 ## ClojureScript Testing (Optional)
@@ -85,7 +85,7 @@ clojure -M:lint
 The core `.cljc` code is portable to ClojureScript. Run the test suite in a Node.js runtime:
 
 ```bash
-clojure -Sdeps '{:paths ["src" "test"]}' -M:dev:cljs \
+kbb -Sdeps '{:paths ["src" "test"]}' -M:dev:cljs \
   -m cljs.main --target node -m intermediation.portable-cljs-test-runner
 ```
 
