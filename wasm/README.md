@@ -3,10 +3,10 @@
 `commission_cap.kotoba` is a port of `intermediation.governor/commission-
 rate-exceeds-cap-violations`'s pure ground-truth comparison -- does a
 placement's own recorded commission rate exceed THIS jurisdiction's own
-recorded commission-rate cap? (see `src/intermediation/governor.cljc`
+recorded commission-rate cap? (see `src/intermediation/governor.cljk`
 lines ~148-164) -- into the minimal `.kotoba` language subset, compiled
 to a real WASM module via `kotoba wasm emit`, and hosted via
-`kototama.tender` (`test/wasm/commission_cap_test.clj`).
+`kototama.tender` (`test/wasm/commission_cap_test.cljk`).
 
 The comparison itself already lives in the safe-kotoba subset as
 `intermediation.kernels.gate/rate-exceeds-cap` (`src/intermediation/
