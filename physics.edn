@@ -1,0 +1,44 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a document-courier and kiosk robot collects
+;; in-person signatures for policy binding (ISIC 6622, insurance agents and
+;; brokers). Its physical work: carrying signed policy papers from the
+;; agency counter to the back office, presenting the signature tablet with its
+;; stand, and keeping the kiosk tablet's battery cool while the kiosk rides in
+;; the agent's parked car between client visits.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-6622"
+ :cases
+ [{:id :policy-papers-to-back-office
+   :kind :transport
+   :procedure "courier robot carries signed policy-binding papers from the agency counter to the back office"
+   :params {:mass-kg 35.0 :payload-kg 3.0 :v-max-mps 0.9 :a-max-mps2 0.4
+            :brake-decel-mps2 0.8 :drive-force-n 80.0 :crr 0.02
+            :cog-height-m 0.45 :support-half-length-m 0.22 :max-time-s 1800.0}
+   :sweep {:param :distance-m :values [10.0 25.0 40.0 60.0 90.0]}
+   :quantity :cycle-time-s
+   :limit {:max 60.0 :basis "estimate: papers reach the back office before the client leaves the counter"}
+   :boundary {:lo 5.0 :hi 200.0}}
+  {:id :present-tablet-with-stand
+   :kind :manipulator
+   :procedure "arm lifts the signature tablet on its weighted stand from the kiosk bay onto the client's table"
+   :params {:l1-m 0.40 :l2-m 0.35 :m1-kg 3.0 :m2-kg 2.0
+            :from [0.20 0.10] :to [0.60 0.30] :duration-s 1.5 :steps 500}
+   :sweep {:param :payload-kg :values [0.5 1.0 2.0 3.0 4.5]}
+   :quantity :peak-tau1-nm
+   :limit {:max 30.0 :basis "estimate: shoulder torque cap for a power-and-force-limited arm working next to a seated client"}
+   :boundary {:lo 0.1 :hi 10.0}}
+  {:id :kiosk-case-in-parked-car
+   :kind :thermal
+   :procedure "kiosk transport case (foam-lined) in a parked car at 65 C cabin air; inner face next to the tablet battery, until it passes 45 C"
+   :params {:conductivity-w-mk 0.035 :density-kg-m3 35.0 :specific-heat-j-kgk 1400.0
+            :t0-c 25.0 :t-hot-c 65.0 :h-front-w-m2k 8.0 :t-back-ambient-c 25.0 :h-back-w-m2k 0.0
+            :threshold-c 45.0 :duration-s 21600.0 :nodes 11}
+   :sweep {:param :thickness-m :values [0.01 0.02 0.03 0.04 0.06 0.08]}
+   :quantity :time-to-threshold-s
+   :limit {:min 1800.0 :basis "estimate: survive one 30-minute client visit; 45 C is a common Li-ion charging ceiling in cell datasheets, not a cited value for this tablet; the foam is modelled alone (tablet heat capacity not included)"}
+   :boundary {:lo 0.005 :hi 0.10}}]}
