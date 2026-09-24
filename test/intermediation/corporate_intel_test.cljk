@@ -26,7 +26,7 @@
   has confirmed the hit on 8291's side (or, deterministically for this
   test suite, via a stub standing in for that confirmed answer) -- see
   `corporate-intel-stubbed-related-hard-holds-deterministically`."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [langgraph.graph :as g]
             [intermediation.store :as store]
             [intermediation.operation :as op]
