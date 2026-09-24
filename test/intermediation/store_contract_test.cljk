@@ -7,7 +7,7 @@
   `casualty.store-contract-test` / `cloud-itonami-isic-6621`'s
   `adjustment.store-contract-test` for the same pattern on the sibling
   actors."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [intermediation.store :as store]))
 
 (defn- close? [a b] (< (Math/abs (- (double a) (double b))) 1e-6))
